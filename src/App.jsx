@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { InputTodo } from "./components/InputTodo";
+import { IncompleteTodo } from "./components/IncompleteTodo";
+import { CompleteTodo } from "./components/CompleteTodo";
 
 export const App = () => {
   const [todoText, setTodoText] = useState("");
@@ -29,8 +32,8 @@ export const App = () => {
 
   const onClickBack = (index) => {
     const newCompleteTodos = [...completeTodos];
-    newCompleteTodos.splice(index, 1);
     const newIncompleteTodos = [...incompleteTodos, newCompleteTodos[index]];
+    newCompleteTodos.splice(index, 1);
     setCompleteTodos(newCompleteTodos);
     setIncompleteTodos(newIncompleteTodos);
   };
@@ -56,29 +59,17 @@ export const App = () => {
 
   return (
     <>
-      <div className="input-area">
-        <input
-          placeholder="TODOを入力"
-          value={todoText}
-          onChange={onChangeTodoText}
-        />
-        <button onClick={onClickAdd}>追加</button>
-      </div>
-      <div className="incomplete-area">
-        <p className="title">未完了のTODO</p>
-        <ul>
-          {incompleteTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickComplete(index)}>完了</button>
-                <button onClick={() => onClickDelete(index)}>削除</button>
-                <button onClick={() => onClickMoveHoryu(index)}>保留へ</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      <InputTodo
+        todoText={todoText}
+        onChange={onChangeTodoText}
+        onClick={onClickAdd}
+      />
+      <IncompleteTodo
+        todos={incompleteTodos}
+        onClickComplete={onClickComplete}
+        onClickDelete={onClickDelete}
+        onClickMoveHoryu={onClickMoveHoryu}
+      />
       <div className="complete-area">
         <p className="title">完了のTODO</p>
         <ul>
@@ -92,22 +83,11 @@ export const App = () => {
           })}
         </ul>
       </div>
-      <div className="horyu-area">
-        <p className="title">保留のTODO</p>
-        <ul>
-          {horyuTodos.map((todo, index) => {
-            return (
-              <div key="todo" className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickMoveIncomplete(index)}>
-                  未完了へ
-                </button>
-                <button onClick={() => onClickRemove(index)}>削除</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      <CompleteTodo
+        todos={horyuTodos}
+        onClickMoveHoryu={onClickMoveHoryu}
+        onClickRemove={onClickRemove}
+      />
     </>
   );
 };
